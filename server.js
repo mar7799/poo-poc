@@ -31,9 +31,9 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const userRoutes = require("./routes/userRoutes");
 app.use("/users", userRoutes);
-// const studentRoutes = require("./routes/studentRoutes");
-// app.use("/students", studentRoutes);
 const productRoutes = require("./routes/productRoutes");
 app.use("/products", productRoutes);
+const orderRoutes = require("./routes/orderRoutes");
+app.use("/order", orderRoutes);
 
 

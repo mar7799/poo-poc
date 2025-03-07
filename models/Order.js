@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const addressSchema = new Schema({
+  street: String,
+  city: String,
+  state: String,
+  country: String,
+  zipCode: String
+});
+
 const orderSchema = new Schema({
     userId: { 
       type: Schema.Types.ObjectId, 
