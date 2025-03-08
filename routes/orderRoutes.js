@@ -1,21 +1,17 @@
 const express = require("express");
 const Order = require("../models/Order");
 const Product = require("../models/Product")
-const mongoose = require("mongoose");
 
 const router = express.Router();
 
 router.post("/placeOrder",async (req,res) =>{
-    const session = mongoose.startSession();
-    (await session).startTransaction();
 
     try{
     const order = new Order(req.body);
     const products = order.products;
     console.log(products);
-    await order.save({session});
     for(const i of products){
-        const product = await Product.findById(i.productId).session(session);
+        const product = await Product.findById(i.productId);
 
         if(!product) {
             throw new Error(`Product not found with Id: ${i.productId}`);
@@ -24,15 +20,13 @@ router.post("/placeOrder",async (req,res) =>{
             throw new Error(`Not Enough Stock for ${product.name}`);
         }
         product.stock -= i.quantity;
-        await product.save({session});
+        console.log(`...........`,product.stock);
+        await product.save();
     }
-
-    await session.commitTransaction();
-    session.endSession();
-    res.status(201).json({ message: "Order placed successfully", order: newOrder });
+    await order.save();
+    res.status(201).json({ message: "Order placed successfully", order: order });
 } catch (err) {
-    await session.abortTransaction();
-    await session.endSession();
+    console.log(err);
     res.status(400).json({ error: err.message});
 }
 });
